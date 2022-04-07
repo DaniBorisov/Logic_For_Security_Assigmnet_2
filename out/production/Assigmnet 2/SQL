@@ -1,0 +1,52 @@
+CREATE TABLE public.Patient
+    (
+        ID int NOT NULL UNIQUE,
+        Name text,
+        CPR int NOT NULL
+    );
+
+CREATE TABLE public.Test_table
+(
+    ID int NOT NULL PRIMARY KEY,
+    type text,
+    date date NOT NULL,
+    Doctor text,
+    p_id cid NOT NULL,
+    result text
+
+);
+
+DROP TABLE public.patient
+
+CREATE TABLE public.Vaccination_table
+(
+    ID int NOT NULL PRIMARY KEY,
+    type text,
+    date date NOT NULL,
+    Doctor text,
+    p_id cid NOT NULL,
+    shots int
+
+);
+
+CREATE TABLE public.Appointment_Vacc
+(
+    ID int NOT NULL PRIMARY KEY,
+    p_id cid NOT NULL,
+    date date NOT NULL
+);
+CREATE TABLE public.Appointment_Test
+(
+    ID int NOT NULL PRIMARY KEY,
+    p_id cid NOT NULL,
+    date date NOT NULL
+);
+
+INSERT INTO public.patient
+VALUES ('631','ALice the Builder','010253046'),('4561','Alberto ','016526'),('4513','Daniel','020405060' )
+
+INSERT INTO public.Test_table (type, date, result)
+VALUES ('reapid', '10.02.2020', 'IKKE PAVIST');
+
+INSERT INTO public.Test_table
+VALUES ('126554','reapid', '10.02.2020','Mister Doctoro','651' ,'IKKE PAVIST');
