@@ -4,6 +4,8 @@ public class User {
     private String Password;
     private int CPR;
     private String Role;
+    private boolean isVaccinated = false;
+    private boolean testedBefore = false;
 
     public User (String username, int CPR, String Role)
     {
@@ -23,5 +25,21 @@ public class User {
     public int getCPR()
     {
         return this.CPR;
+    }
+
+    public boolean isVaccinated() {
+        return isVaccinated;
+    }
+
+    public void setVaccinated(boolean vaccinated) {
+        isVaccinated = vaccinated;
+    }
+
+    public boolean isTestedBefore() {
+        return testedBefore;
+    }
+
+    public void setTestedBefore(boolean testedBefore) {
+        this.testedBefore = testedBefore;
     }
 }

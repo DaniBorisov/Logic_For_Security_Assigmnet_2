@@ -1,19 +1,24 @@
 import java.util.Date;
 
-public class Testing extends Record {
+public class Testing {
 
     private boolean Result;
+    private int id;
     private String Type;
-    private Date date;
+    private String date;
 
-    public Testing(boolean result, String Type,Date date)
+    public Testing(String Type,String date, int  id)
     {
-        this.Result = result;
         this.Type = Type;
         this.date = date;
+        this.id = id;
     }
 
-    public boolean isResult() {
+    public int getId() {
+        return id;
+    }
+
+    public boolean getResult() {
         return Result;
     }
 
@@ -21,29 +26,16 @@ public class Testing extends Record {
         Result = result;
     }
 
-    public String getType() {
-        return Type;
+    String getType() {
+        return this.Type;
     }
 
-    @Override
-    void setType() {
-
+    public String getDate() {
+        return this.date;
     }
 
-    public void setType(String type) {
-        Type = type;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    @Override
-    void setDate() {
-
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
+    public String toString()
+    {
+        return "Tested with " + this.Type + " at: " +this.date + "  result: " + this.Result;
     }
 }

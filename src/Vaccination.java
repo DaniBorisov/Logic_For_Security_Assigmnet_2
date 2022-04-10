@@ -1,26 +1,18 @@
 import java.util.Date;
 
-public class Vaccination extends Record{
+public class Vaccination{
 
     private String Type;
-    private int numberOfShots=0;
+    private int numberOfShots;
     private boolean vaccinated=false;
-    private Date date;
+    private String date;
 
-    public Vaccination(String Type,Date date)
+    public Vaccination(String Type,String date)
     {
         this.Type = Type;
         this.date = date;
         this.vaccinated=true;
-    }
-
-    public String getType() {
-        return Type;
-    }
-
-    @Override
-    void setType() {
-
+        this.numberOfShots = 1;
     }
 
     public int getNumberOfShots() {
@@ -31,28 +23,25 @@ public class Vaccination extends Record{
         return vaccinated;
     }
 
-    public Date getDate() {
-        return date;
+    public void setNumberOfShots() {
+        this.numberOfShots +=1;
     }
 
-    @Override
-    void setDate() {
-
+    public String getDate() {
+        return this.date;
     }
 
-    public void setType(String type) {
-        Type = type;
+    public String getType() {
+        return this.Type;
     }
 
-    public void setNumberOfShots(int numberOfShots) {
-        this.numberOfShots = numberOfShots;
+    void setType(String type) {
+        this.Type = type;
     }
 
-    public void setVaccinated(boolean vaccinated) {
-        this.vaccinated = vaccinated;
-    }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public String toString()
+    {
+        return "Vaccinated with " + this.Type + " at: " +this.date + "  number of shots: " + this.numberOfShots;
     }
 }
