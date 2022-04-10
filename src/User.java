@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class User {
 
     private String Username;
@@ -6,6 +8,7 @@ public class User {
     private String Role;
     private boolean isVaccinated = false;
     private boolean testedBefore = false;
+    private ArrayList<String> appointments = new ArrayList<>();
 
     public User (String username, int CPR, String Role)
     {
@@ -42,4 +45,15 @@ public class User {
     public void setTestedBefore(boolean testedBefore) {
         this.testedBefore = testedBefore;
     }
+
+    public void setAppointment(String date)
+    {
+        appointments.add(date);
+    }
+
+    public ArrayList<String> getAppointment()
+    {
+        return (appointments);
+    }
+
 }

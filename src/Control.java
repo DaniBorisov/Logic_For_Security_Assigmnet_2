@@ -78,6 +78,7 @@ public class Control {
     {
         getUserTestInfo(user);
         getUserVaccineInfo(user);
+        getUserAppointments(user);
     }
 
     public void getTotalTestedPatient() {
@@ -90,6 +91,19 @@ public class Control {
 
     public void getNumberOfPositiveTested() {
         System.out.println( this.PossitiveTested);
+    }
+
+    public void getUserAppointments(User user)
+    {
+        if (!user.getAppointment().isEmpty())
+            System.out.println(user.getUsername() + " has appointment for " + user.getAppointment());
+        else
+            System.out.println(user.getUsername() + " has no active appointments.");
+    }
+
+    public void setUserAppointments(User user, String date)
+    {
+        user.setAppointment(date);
     }
 
     public void getStatistics()

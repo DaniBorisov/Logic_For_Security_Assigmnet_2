@@ -50,15 +50,20 @@ public class Main {
 
         control.setUserTestResultPossitive(u2,963);  control.setUserTestResultPossitive(u2,741);
 
+        control.setUserAppointments(u1,"10.10.22");
 
-
-        control.getUserTestInfo(u1);
+//        control.getUserTestInfo(u1);
 //        System.out.println(DatabaseTesting.get(u1).toString());
-        control.getUserVaccineInfo(u1);
+//        control.getUserVaccineInfo(u1);
 //        System.out.println(DatabaseVaccination.get(u1).toString());
 
+
+        control.getUserInfo(u1);
         control.getUserInfo(u2);
         control.getUserInfo(u3);
+
+
+
 
         control.getTotalTestedPatient();
         control.getVaccinatedPatients();
