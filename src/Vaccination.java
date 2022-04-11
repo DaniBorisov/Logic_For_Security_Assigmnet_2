@@ -39,7 +39,6 @@ public class Vaccination{
         this.Type = type;
     }
 
-
     public String toString()
     {
         return "Vaccinated with " + this.Type + " at: " +this.date + "  number of shots: " + this.numberOfShots;
