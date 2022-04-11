@@ -3,10 +3,6 @@ import java.util.*;
 
 public class Main {
 
-    public static Map<User, ArrayList<Testing>> DatabaseTesting = new HashMap<>();
-    public static Map<User, ArrayList<Vaccination>> DatabaseVaccination = new HashMap<>();
-    private static final Scanner scanner = new Scanner(System.in);  // Create a Scanner object
-
     public static void main(String[] args) {
 
         Control control = new Control();
@@ -46,7 +42,7 @@ public class Main {
 
         control.getUserInfo(u1,u1);
         control.getUserInfo(u1,u2);
-        control.getUserInfo(u2,u3);
+        control.getUserInfo(u3,u3);
 
         control.getStatistics();
     }
