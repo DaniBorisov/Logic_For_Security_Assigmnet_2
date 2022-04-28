@@ -5,9 +5,9 @@ public class User {
     private String Username;
     private String Password;
     private int CPR;
-    private String Role;
-    private boolean isVaccinated = false;
-    private boolean testedBefore = false;
+    private String Role; // low
+    private boolean isVaccinated = false; // {user: user, shs}
+    private boolean testedBefore = false; // {user: user, shs}
     private ArrayList<String> appointments = new ArrayList<>();
 
     public User (String username, int CPR, String Role)

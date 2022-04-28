@@ -1,6 +1,3 @@
-import java.util.*;
-
-
 public class Main {
 
     public static void main(String[] args) {
@@ -25,21 +22,28 @@ public class Main {
         control.TestPatient(u1,u1,t1);
         control.TestPatient(u1,u1,t2);
 
-        control.TestPatient(u1,u2,t3);         control.TestPatient(u1,u2,t4);         control.TestPatient(u1,u2,t5);         control.TestPatient(u1,u2,t6);
+        control.TestPatient(u1,u2,t3);
+        control.TestPatient(u1,u2,t4);
+        control.TestPatient(u1,u2,t5);
+        control.TestPatient(u1,u2,t6);
 
 
         control.VaccinatePatient(u1,u1,v1);
         control.VaccinatePatient(u1,u1,v1);
 
-        control.VaccinatePatient(u2,u3,v2);         control.VaccinatePatient(u1,u3,v2);         control.VaccinatePatient(u1,u3,v2);
+        control.VaccinatePatient(u2,u3,v2);
+        control.VaccinatePatient(u1,u3,v2);
+        control.VaccinatePatient(u1,u3,v2);
 
-        control.setUserTestResultPossitive(u1,u1,321);
+        control.setUserTestResultPositive(u1,u1,321);
 
 
-        control.setUserTestResultPossitive(u1,u2,963);  control.setUserTestResultPossitive(u1,u2,741);
+        control.setUserTestResultPositive(u1,u2,963);
+        control.setUserTestResultPositive(u1,u2,741);
 
         control.setUserAppointments(u1,"10.10.22");
 
+        control.getUserTestInfoDoctor(u2,u1);
         control.getUserInfo(u1,u1);
         control.getUserInfo(u1,u2);
         control.getUserInfo(u3,u3);
