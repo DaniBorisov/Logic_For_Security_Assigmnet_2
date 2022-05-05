@@ -1,30 +1,32 @@
 import java.util.*;
-// ⊥
-public class Control {
+
+public class Hospital {
 
     Map<User, ArrayList<Testing> > DatabaseTesting = new HashMap<>();
-    Map<User, ArrayList<Vaccination>> DatabaseVaccination = new HashMap<>(); // User { } , Test {shs: shs}
+    Map<User, ArrayList<Vaccination>> DatabaseVaccination = new HashMap<>(); //  DatabaseVaccination_ = {shs: shs}
     private int TotalTestedPatient = 0;
-    private int VaccinatedPatients = 0;
-    private int PossitiveTested = 0; // [p:p] ?? label
+    private int VaccinatedPatients = 0; {}
+    private int PossitiveTested = 0; // {} ?? label
 
-    public Control() {
+    public Hospital() {
 
     }
-                                //    {shs:shs , p:pshs , p:p,shs }
+//          {shs: shs}  {shs: shs}
+    //   // S_ = a_ /\ b_ | s_  < {shs:shs} | doctor_ = {shs:shs} , user_ = {user:user,shs} , v_ = {user: suer shs}
     public void VaccinatePatient(User doctor, User user, Vaccination v)
     {
         if(doctor.getRole() == "Doctor") { // {shs: shs}
             if (!user.isVaccinated()) { // {user: user, shs}
-                DatabaseVaccination.put(user, new ArrayList<>());           // implicit  {shs:shs} -> {shs:shs}
-                                                                            // Explicit, implicit: {user: user, shs} -> {shs:shs}
-                DatabaseVaccination.get(user).add(v);                       // implicit: {shs:shs} -> {shs:shs}
-                                                                            // Explicit, implicit: {user: user, shs} -> {shs:shs}
+                DatabaseVaccination.put(user, new ArrayList<>());  // a_  = {shs:shs}        // Flow implicit  {shs:shs} -> {shs:shs}
+                                                                                             // Flow Explicit, implicit: {user: user, shs} -> {shs:shs}
+
+                DatabaseVaccination.get(user).add(v);              //  b_ = {shs:shs}       // Flow implicit: {shs:shs} -> {shs:shs}
+                                                                                            // Flow Explicit, implicit: {user: user, shs} -> {shs:shs}
 
                 user.setVaccinated(true); //  -||-
-                this.VaccinatedPatients += 1; // Explicit: {⊥} -> {⊥}, Implicit: {shs: shs}-> {⊥},
+                this.VaccinatedPatients += 1;  //c_ = {⊥} // Explicit: {⊥} -> {⊥}, Implicit: {shs: shs}-> {⊥}, {user:user,shs} -> {⊥}
             } else {
-                DatabaseVaccination.get(user).get(0).setNumberOfShots(); // Explicit: {shs: shs} -> {shs: shs}, implicit: {user: shs}, {shs: shs} -> {shs: shs},
+                DatabaseVaccination.get(user).get(0).setNumberOfShots();  //  Explicit: {shs: shs} -> {shs: shs}, implicit: {user: shs}, {shs: shs} -> {shs: shs},
             }
         }
         else
