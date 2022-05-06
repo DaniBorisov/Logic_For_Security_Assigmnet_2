@@ -3,27 +3,27 @@ import java.util.*;
 public class Hospital {
 
     Map<User, ArrayList<Testing> > DatabaseTesting = new HashMap<>();
-    Map<User, ArrayList<Vaccination>> DatabaseVaccination = new HashMap<>(); //  DatabaseVaccination_ = {shs: shs}
+    Map<User, ArrayList<Vaccination>> DatabaseVaccination = new HashMap<>(); //  DatabaseVaccination_ = {shs: shs} { (Shs : shs), (User : user,shs) } // )
     private int TotalTestedPatient = 0;
     private int VaccinatedPatients = 0; {}
-    private int PossitiveTested = 0; // {} ?? label
+    private int PossitiveTested = 0; // {shs:shs} ?? label
 
     public Hospital() {
 
     }
-//          {shs: shs}  {shs: shs}
-    //   // S_ = a_ /\ b_ | s_  < {shs:shs} | doctor_ = {shs:shs} , user_ = {user:user,shs} , v_ = {user: suer shs}
+
+    //   // S_ = a_ /\ b_ /\ c_ | s_  < {shs:shs} | doctor_ = {shs:shs} , user_ = {user:user,shs} , v_ = {user: suer shs}
     public void VaccinatePatient(User doctor, User user, Vaccination v)
     {
         if(doctor.getRole() == "Doctor") { // {shs: shs}
-            if (!user.isVaccinated()) { // {user: user, shs}
+            if (!user.isVaccinated()) { // {user: user, shs} s1_ = a_ /\ b_ /\ c_
                 DatabaseVaccination.put(user, new ArrayList<>());  // a_  = {shs:shs}        // Flow implicit  {shs:shs} -> {shs:shs}
                                                                                              // Flow Explicit, implicit: {user: user, shs} -> {shs:shs}
-
+// either declass or give ownership to user
                 DatabaseVaccination.get(user).add(v);              //  b_ = {shs:shs}       // Flow implicit: {shs:shs} -> {shs:shs}
-                                                                                            // Flow Explicit, implicit: {user: user, shs} -> {shs:shs}
+                                                                                            // Flow Explicit, implicit: {user: user, shs} -> {shs:shs}/ not all
 
-                user.setVaccinated(true); //  -||-
+                user.setVaccinated(true); //  -||-   {User:suer,shs} -> {user:user ,shs}  | {shs:shs} -> {User:user , shs}
                 this.VaccinatedPatients += 1;  //c_ = {⊥} // Explicit: {⊥} -> {⊥}, Implicit: {shs: shs}-> {⊥}, {user:user,shs} -> {⊥}
             } else {
                 DatabaseVaccination.get(user).get(0).setNumberOfShots();  //  Explicit: {shs: shs} -> {shs: shs}, implicit: {user: shs}, {shs: shs} -> {shs: shs},
@@ -31,7 +31,6 @@ public class Hospital {
         }
         else
             System.out.println(doctor.getUsername() + " does not have permission to vaccinate " + user.getUsername()); //{shs:shs} -> {shs:shs}
-
     }
                             // {shs: shs} {user: user, shs} {user: user, shs}
     public void TestPatient(User doctor,User user, Testing t)
