@@ -71,7 +71,7 @@ public void setUserTestResultPositive(User doctor, User user, int id)  // S0  | 
     if(doctor.getRole() == "Doctor") { //S3_ = S2 /\ c_ /\ s2_ | S3_  <= {shs:shs} /\ {shs:shs} /\ {shs:shs}-> S2_  {shs:shs} <= {shs:shs}
         for (int i = 0; i < DatabaseTesting.get(user).size(); i++) // S2_ = S1 |  S2_ <= S1 ->  S2_  {} <= {shs:shs}
         {
-            if (DatabaseTesting.get(user).get(i).getId() == id) // S1_ =  s1 | S1_ <= s1
+            if (DatabaseTesting.get(user).get(i).getId() == id) // S1_ =  s1 | S1_ <= s1  | {(shs:shs), (User: user, shs)} <= SHS:SHS}
             {
             // s1_
                 DatabaseTesting.get(user).get(i).setResult(true);   // a_  | {(shs:shs), (User: user, shs)} <= a_
@@ -181,6 +181,7 @@ public void getUserVaccineInfo(User checker, User user)    {  // S0_ | S0_ <= S2
 
     public void getVaccinatedPatients()
     public void getNumberOfPositiveTested()
+
     public void getTotalTestedPatient() { // S0_ | S0_ <= s1_
     }
         //s1_ | {} <= s1_
