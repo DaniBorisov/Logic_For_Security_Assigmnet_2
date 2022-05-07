@@ -4,9 +4,9 @@ public class Hospital {
 
     Map<User, ArrayList<Testing> > DatabaseTesting = new HashMap<>();
     Map<User, ArrayList<Vaccination>> DatabaseVaccination = new HashMap<>(); //  DatabaseVaccination_ = {shs: shs} { (Shs : shs), (User : user,shs) } // )
-    private int TotalTestedPatient = 0;
-    private int VaccinatedPatients = 0; {}
-    private int PossitiveTested = 0; // {shs:shs} ?? label
+    private int TotalTestedPatient = 0; // {shs:shs}
+    private int VaccinatedPatients = 0; // {shs:shs}
+    private int PossitiveTested = 0;    // {shs:shs}
 
     public Hospital() {
 
@@ -69,6 +69,8 @@ public class Hospital {
         else
             System.out.println(doctor.getUsername() + " does not have permission to set test results to " + user.getUsername()); //{shs:shs} -> {shs:shs}
     }
+
+
                     //  {user: user, shs} {user: user, shs}
     public void getUserTestInfo(User checker, User patient)    {
         if(checker.getCPR() == patient.getCPR()) { //  {user: user, shs}
@@ -80,6 +82,7 @@ public class Hospital {
         else
             System.out.println("You dont have permission do check that patient!");          //implicit: {shs:shs} -> {shs:shs}
     }
+
                                      // {shs: shs}   {user: user,  shs}
     public void getUserTestInfoDoctor(User checker, User patient)    {
         if(checker.getRole() == "Doctor") {     // {shs: shs}
@@ -92,6 +95,8 @@ public class Hospital {
         else
             System.out.println("You dont have permission do check that patient!");      //implicit: {shs:shs} -> {shs:shs}
     }
+
+
                     // [{user: user, shs} , {shs:shs}] , {user: user, shs}
     public void getUserVaccineInfo(User checker, User user)    {
         if(checker.getCPR() == user.getCPR() || checker.getRole() == "Doctor") { //  {user: user, shs}  | {shs:shs}
@@ -125,6 +130,8 @@ public class Hospital {
     public void getNumberOfPositiveTested() {
         System.out.println( this.PossitiveTested);//{⊥}
     }
+
+
                             // [ {user: user ,shs}, {shs:shs}]
     public void getUserAppointments(User checker,User user)
     {
