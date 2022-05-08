@@ -35,7 +35,7 @@ public class Hospital {
             }
         }
         else
-            System.out.println(doctor.getUsername() + " does not have permission to vaccinate " + user.getUsername()); //{shs:shs} -> {shs:shs}
+            System.out.println(doctor.getUsername() + " does not have permission to vaccinate " + user.getUsername()); //{shs:shs} -> {(shs:shs), (User: user, shs)}
     }
                             // {shs: shs} {user: user, shs} {user: user, shs}
     public void TestPatient(User doctor,User user, Testing t)
@@ -45,16 +45,19 @@ public class Hospital {
                 DatabaseTesting.put(user, new ArrayList<Testing>());    // implicit  {shs:shs} -> {shs:shs}
                                                                         // Explicit, implicit: {user: user, shs} -> {shs:shs}
 
-                                                                        // outer implicit: {shs:shs} -> {shs:shs}
-                                                                        // inner Explicit, implicit: {user: user, shs} -> {shs:shs}
+                user.setTestedBefore(true);                             // outer implicit: {shs:shs} -> {(shs:shs), (User: user, shs)}
+                                                                        // inner Explicit, implicit: {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)}
             }
-            DatabaseTesting.get(user).add(t);                            // implicit: {shs:shs} -> {shs:shs}
-                                                                        // Explicit, implicit: {user: user, shs} -> {shs:shs}
-            this.TotalTestedPatient += 1;          // Explicit: {⊥} -> {⊥}, Implicit: {shs: shs}-> {⊥},
+            DatabaseTesting.get(user).add(t);                            // implicit: {shs:shs} -> {(shs:shs), (User: user, shs)}
+                                                                        // Explicit {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)}
+
+            this.TotalTestedPatient += 1;          // Explicit: {shs: shs} -> {shs: shs}, Implicit: {shs: shs}-> {shs: shs},
         }
         else
-            System.out.println(doctor.getUsername() + " does not have permission to test " + user.getUsername());       //{shs:shs} -> {shs:shs}
+            System.out.println(doctor.getUsername() + " does not have permission to test " + user.getUsername()); // {shs:shs} -> {(shs:shs), (User: user, shs)}
     }
+
+
                                            // {shs: shs} {user: user, shs} {user: user, shs}
     public void setUserTestResultPositive(User doctor, User user, int id)
     {
@@ -78,7 +81,7 @@ public class Hospital {
             this.PossitiveTested = counter;  // {shs: shs} -> {shs: shs}
         }
         else
-            System.out.println(doctor.getUsername() + " does not have permission to set test results to " + user.getUsername()); //{shs:shs} -> {shs:shs}
+            System.out.println(doctor.getUsername() + " does not have permission to set test results to " + user.getUsername()); //{shs:shs} -> {(shs:shs), (User: user, shs)}
     }
 
 
