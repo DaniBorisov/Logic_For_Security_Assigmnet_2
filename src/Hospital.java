@@ -2,8 +2,8 @@ import java.util.*;
 
 public class Hospital {
 
-    Map<User, ArrayList<Testing> > DatabaseTesting = new HashMap<>();
-    Map<User, ArrayList<Vaccination>> DatabaseVaccination = new HashMap<>(); //  DatabaseVaccination_ = {shs: shs} { (Shs : shs), (User : user,shs) } // )
+    Map<User, ArrayList<Testing> > DatabaseTesting = new HashMap<>(); //  DatabaseVaccination_ = {(shs:shs), (User: user, shs)}
+    Map<User, ArrayList<Vaccination>> DatabaseVaccination = new HashMap<>(); //  DatabaseVaccination_ = {(shs:shs), (User: user, shs)}
     private int TotalTestedPatient = 0; // {shs:shs}
     private int VaccinatedPatients = 0; // {shs:shs}
     private int PossitiveTested = 0;    // {shs:shs}
@@ -15,6 +15,7 @@ public class Hospital {
     //   // S_ = a_ /\ b_ /\ c_ | s_  < {shs:shs} | doctor_ = {shs:shs} , user_ = {user:user,shs} , v_ = {user: suer shs}
     public void VaccinatePatient(User doctor, User user, Vaccination v)
     {
+
         if(doctor.getRole() == "Doctor") { // {shs: shs}
             if (!user.isVaccinated()) { // {user: user, shs} s1_ = a_ /\ b_ /\ c_
                 DatabaseVaccination.put(user, new ArrayList<>());  // a_  = {shs:shs}        // Flow implicit  {shs:shs} -> {shs:shs}
@@ -23,10 +24,14 @@ public class Hospital {
                 DatabaseVaccination.get(user).add(v);              //  b_ = {shs:shs}       // Flow implicit: {shs:shs} -> {shs:shs}
                                                                                             // Flow Explicit, implicit: {user: user, shs} -> {shs:shs}/ not all
 
-                user.setVaccinated(true); //  -||-   {User:suer,shs} -> {user:user ,shs}  | {shs:shs} -> {User:user , shs}
-                this.VaccinatedPatients += 1;  //c_ = {⊥} // Explicit: {⊥} -> {⊥}, Implicit: {shs: shs}-> {⊥}, {user:user,shs} -> {⊥}
+                user.setVaccinated(true); //                // Flow outer implicit: {shs:shs} -> {(shs:shs), (User: user, shs)}
+                                                            // Flow inner Explicit, implicit: {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)}
+
+                this.VaccinatedPatients += 1;            // Flow outer implicit: {shs:shs} -> {shs:shs}
+                                                        // Flow  inner implicit: {(shs:shs), (User: user, shs)} -> {shs:shs}, Explicit: {shs: shs} -> {shs: shs}
             } else {
-                DatabaseVaccination.get(user).get(0).setNumberOfShots();  //  Explicit: {shs: shs} -> {shs: shs}, implicit: {user: shs}, {shs: shs} -> {shs: shs},
+                DatabaseVaccination.get(user).get(0).setNumberOfShots();    //  Explicit: {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)},
+                                                                            // implicit: {shs: shs}-> {{(shs:shs), (User: user, shs)}
             }
         }
         else
@@ -40,8 +45,8 @@ public class Hospital {
                 DatabaseTesting.put(user, new ArrayList<Testing>());    // implicit  {shs:shs} -> {shs:shs}
                                                                         // Explicit, implicit: {user: user, shs} -> {shs:shs}
 
-                user.setTestedBefore(true);                             // implicit: {shs:shs} -> {shs:shs}
-                                                                        // Explicit, implicit: {user: user, shs} -> {shs:shs}
+                                                                        // outer implicit: {shs:shs} -> {shs:shs}
+                                                                        // inner Explicit, implicit: {user: user, shs} -> {shs:shs}
             }
             DatabaseTesting.get(user).add(t);                            // implicit: {shs:shs} -> {shs:shs}
                                                                         // Explicit, implicit: {user: user, shs} -> {shs:shs}
@@ -55,16 +60,22 @@ public class Hospital {
     {
         int counter = 0; //[shs:shs]
         if(doctor.getRole() == "Doctor") {      // {shs: shs}
-            for (int i = 0; i < DatabaseTesting.get(user).size(); i++) {
+            for (int i = 0; i < DatabaseTesting.get(user).size(); i++) {// i_ | [shs:shs]
+
+                // if_act_for(DatabaseTesting.get,shs)
+                // DatabaseTesting.get // declassify(DatabaseTesting.get){shs:shs} | valid_declass(shs,DatabaseTesting.get_,{shs:shs} )
+                //  databaseTesting.get_ | {(shs:shs), (User: user, shs)}} -> {shs:shs}
+                // end_act_for
+
                 if (DatabaseTesting.get(user).get(i).getId() == id) {
-                    DatabaseTesting.get(user).get(i).setResult(true);   // Explicit: {user: shs} -> {shs: shs},
-                                                                        // Explicit, implicit: {user: user, shs} -> {shs: shs}
-                    counter += 1;           // Explicit  {shs:shs} -> {shs:shs}
-                                            // implicit  {user: shs}, {shs:shs} -> {shs:shs}
+                    DatabaseTesting.get(user).get(i).setResult(true);   // outer implicit:{shs: shs} -> {shs:shs}
+                                                                        // inner  Explicit, implicit: {shs:shs} -> {shs:shs}
+
+                    counter += 1;                                       // outer implicit  {shs:shs} -> {shs:shs}
+                                                                        // inner implicit  {shs:shs} -> {shs:shs} | explicit:  {shs:shs} -> {shs:shs}
                 }
             }
-//             if_act_for(counter,shs)  declassification  positiveTested = declassify(count) [{shs, shs} - > {⊥}]
-            this.PossitiveTested = counter;  // {⊥} -> {⊥}
+            this.PossitiveTested = counter;  // {shs: shs} -> {shs: shs}
         }
         else
             System.out.println(doctor.getUsername() + " does not have permission to set test results to " + user.getUsername()); //{shs:shs} -> {shs:shs}
@@ -120,7 +131,9 @@ public class Hospital {
     }
 
     public void getTotalTestedPatient() {
-        System.out.println( this.TotalTestedPatient);//{⊥}
+        // if_act_for(this.TotalTestedPatient,shs)
+        System.out.println( this.TotalTestedPatient); // declassify(this.TotalTestedPatient){} | valid_declass(shs,this.TotalTestedPatient_,{})
+        //  this.TotalTestedPatient_ | {shs:shs} -> {}
     }
 
     public void getVaccinatedPatients() {

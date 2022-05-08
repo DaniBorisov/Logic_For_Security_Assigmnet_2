@@ -1,11 +1,13 @@
 import java.util.ArrayList;
 
 public class dsadas {
+
 public void VaccinatePatient(User doctor, User user, Vaccination v) // S0_  | S0_ <=  S2_ |  S0_ <= {shs:shs}
 {
     if(doctor.getRole() == "Doctor") {  // { S2_  |  S2_ <= S1_ /\ s3_   |  S2_ <= {shs:shs} /\ {shs:shs}| {shs:shs} <= {shs:shs}
-        if (!user.isVaccinated()) { //  S1_ | S1_ <= s1 /\ s2  | S1_ <= {(shs:shs), (User: user, shs)} /\  {shs:shs}
-                                    // | {(shs:shs), (User: user, shs)} <= {shs:shs}
+         //declass(user.isVaccinated())  from {(shs:shs), (User: user, shs)} to (shs:shs)
+        if (!user.isVaccinated()) { //  S1_ | S1_ <= s1 /\ s2  | S1_ <= {(shs:shs), (User: user, shs)} /\ {(shs:shs), (User: user, shs)} /\  {shs:shs}
+                                    // | {shs:shs} <= {shs:shs}
              //s1
             // s1_  = a_ /\ b_ /\ c_ /\ d_
             DatabaseVaccination.put(user, new ArrayList<>());   //  a_ | {(shs:shs), (User: user, shs)} <= a_
@@ -18,9 +20,12 @@ public void VaccinatePatient(User doctor, User user, Vaccination v) // S0_  | S0
         }
     }
     else
-       // s3_   | {shs:shs} <= s3_
+       // s3_   | {shs:shs} <= s3_   {(shs:shs), (User: user, shs)}
         System.out.println(doctor.getUsername() + " does not have permission to vaccinate " + user.getUsername());
 }
+
+
+
 // {(shs:shs), (User: user, shs)} <= a_
 // {(shs:shs), (User: user, shs)} <= b_
 // {(shs:shs), (User: user, shs)} <= c_
@@ -28,9 +33,8 @@ public void VaccinatePatient(User doctor, User user, Vaccination v) // S0_  | S0
 // {(shs:shs), (User: user, shs)} <= e_
 // {shs:shs} <= s3_
 
-//  s1_  <= a_ /\ b_ /\ c_ /\ d_  -> {(shs:shs), (User: user, shs)} /\ {(shs:shs), (User: user, shs)}
-//                                    /\ {(shs:shs), (User: user, shs)}  /\ {shs:shs} | s1_<= {shs:shs} |
-//  s2_ <= e_   ->   s2_ <= {(shs:shs), (User: user, shs)}
+//  s1_  <= a_ /\ b_ /\ c_ /\ d_  -> {shs:shs,user} /\ {shs:shs,user} /\ {(shs:shs), (User: user, shs)}  /\ {shs:shs} | s1_<= {shs:shs} |
+//  s2_ <= e_   ->   s2_ <= {shs:shs,user}
 // S1_ <= s1_ /\ s2_  ->  {shs:shs} /\ {(shs:shs), (User: user, shs)} -> S1_ <= {shs:shs}
 // S2_ <= S1_ /\ s3_  ->  {shs:shs} /\ {shs:shs} -> S2_ <= {shs:shs}
 // S0_ <=  S2_ |  S0_ <= {shs:shs}
@@ -41,7 +45,10 @@ public void TestPatient(User doctor,User user, Testing t) // S0_  | S0_ <=  S1_ 
 {
     if(doctor.getRole() == "Doctor") { // {shs: shs} // S1_ | S1_ <= s2_ /\ s3_
         //s2 <= s1_ /\ c_ /\ d_
+
         if (!user.isTestedBefore() ) { // s1_ <= a_ /\ b_
+        // declass (user.isTestedBefore())
+
             DatabaseTesting.put(user, new ArrayList<Testing>());   //  a_ | {(shs:shs), (User: user, shs)} <= a_
             user.setTestedBefore(true);                            //  b_ | {(shs:shs), (User: user, shs)} <= b_
         }
@@ -58,23 +65,27 @@ public void TestPatient(User doctor,User user, Testing t) // S0_  | S0_ <=  S1_ 
 // {shs:shs} <= d_
 // {shs:shs} <= s3_
 
-// s1_ <= a_ /\ b_ -> s1_ <= {(shs:shs), (User: user, shs)} /\ {(shs:shs), (User: user, shs)}  | s1_ <= {(shs:shs), (User: user, shs)}
-// s2 <= s1_ /\ c_ /\ d_ ->  s2 <= {(shs:shs), (User: user, shs)} /\ {(shs:shs), (User: user, shs)} /\ {shs:shs} | s2_ <= {shs:shs}
+// s1_ <= a_ /\ b_ -> s1_ <= {(shs:shs), (User: user, shs)} /\ {(shs:shs), (User: user, shs)}  | s1_ <= {shs:shs}
+// s2 <= s1_ /\ c_ /\ d_ ->  s2 <= {shs:shs} /\ {(shs:shs), (User: user, shs)} /\ {shs:shs} | s2_ <= {shs:shs}
 // S1_ <= s2_ /\ s3_  -> S1_ <= {shs:shs} /\  {shs:shs} | S1_ <= {shs:shs}
 // S0_ <=  S1_ |  S0_ <= {shs:shs}
 
 
-
+                             // (shs:shs), {User:user,shs}, {shs:shs}
 public void setUserTestResultPositive(User doctor, User user, int id)  // S0  | S0_ <=  S3_ /\ b_
 {
     int counter = 0; // b_  | {shs:shs} <= b_
     if(doctor.getRole() == "Doctor") { //S3_ = S2 /\ c_ /\ s2_ | S3_  <= {shs:shs} /\ {shs:shs} /\ {shs:shs}-> S2_  {shs:shs} <= {shs:shs}
         for (int i = 0; i < DatabaseTesting.get(user).size(); i++) // S2_ = S1 |  S2_ <= S1 ->  S2_  {} <= {shs:shs}
         {
-            if (DatabaseTesting.get(user).get(i).getId() == id) // S1_ =  s1 | S1_ <= s1  | {(shs:shs), (User: user, shs)} <= SHS:SHS}
+            // if_act_for(DatabaseTesting.get,shs)
+            DatabaseTesting.get // declassify(DatabaseTesting.get){shs:shs} | valid_declass(shs,DatabaseTesting.get_,{shs:shs} )
+            //  databaseTesting.get_ | {(shs:shs), (User: user, shs)}} -> {shs:shs}
+            // end_act_for
+            if (DatabaseTesting.get(user).get(i).getId() == id) // S1_ =  s1 | S1_ <= s1  | {shs:shs} <= {shs:shs}
             {
             // s1_
-                DatabaseTesting.get(user).get(i).setResult(true);   // a_  | {(shs:shs), (User: user, shs)} <= a_
+                DatabaseTesting.get(user).get(i).setResult(true);   // a_  | {shs:shs} <= a_
                 counter += 1;                                       // b_  | {shs:shs} <= b_
             }
         }
@@ -86,12 +97,12 @@ public void setUserTestResultPositive(User doctor, User user, int id)  // S0  | 
 }
 
 // {} <= i_
-// {shs:shs} <= a_
+// {shs:shs,user} <= a_
 // {shs:shs} <= b_
 // {shs:shs} <= c_
 // {shs:shs} <= s2_
 
-// S1_ <= a_ /\ b_ ->   {shs:shs} /\ {shs:shs} -> S1_<= {shs:shs}   |{SHS:SHS} <= {SHS:SHS}
+// S1_ <= a_ /\ b_ ->   {shs:shs,user} /\ {shs:shs} -> S1_<= {shs:shs}   |{SHS:SHS} <= {SHS:SHS}
 // S2_ <= S1 ->  S2_ <= {shs:shs} | {SHS:SHS} <= {SHS:SHS}
 // S3_ = S2 /\ c_ /\ s2_ ->  {shs:shs} /\ {shs:shs} /\ {shs:shs} -> S3_  <= {shs:shs}  | {SHS:SHS} <= {shs:shs}
 // S0_ <=  S3_ /\ b_  -> {shs:shs} /\ {shs:shs} S0 <= {shs:shs}
@@ -102,15 +113,19 @@ public void getUserTestInfo(User checker, User patient)  { // S0_ | S0_ <= S2_
         if (!patient.isTestedBefore()) //   S1_ | S1_ <= a /\ b
             System.out.println(patient.getUsername() + " is not Tested before");    // {(shs:shs), (User: user, shs)} <= a_
         else
-            System.out.println(patient.getUsername() + " is " + DatabaseTesting.get(patient).toString()); // {(shs:shs), (User: user, shs)} <= b_
+            System.out.println(patient.getUsername() + " is " + DatabaseTesting.get(patient).toString()); // {shs:shs,user} <= b_
     }
     else
         System.out.println("You dont have permission do check that patient!");
 }
 
-// {User: user} <= a_
-// {(shs:shs), (User: user, shs)} <= b_
-// S1_ <= a /\ b  ->  S1_ <=  {(shs:shs), (User: user, shs)}  /\ {(shs:shs), (User: user, shs)} | S1_ <= {(shs:shs), (User: user, shs)}
+// Meet = a_(owners) /\ b_(owners) = {(shs:shs), (/\User: user, shs)} = {shs: shs, user}
+// {shs:user,shs} <= {shs: user, owner}
+
+
+// {(shs:shs), (User: user, shs)} <= a_
+// {shs:shs,user} <= b_
+// S1_ <= a /\ b  ->  S1_ <=  {(shs:shs), (User: user, shs)}  /\ {shs:shs,user} | S1_   {(shs:shs), (User: user, shs)} <= {shs:shs}
 // S2_ <= S1_
 // S0_ <= S2_ -> S0_ <= {(shs:shs), (User: user, shs)}
 
