@@ -11,117 +11,147 @@ public class Hospital {
     public Hospital() {
 
     }
+    //                            {shs:shs}, {shs:shs} {user:user,shs}, {shs:shs} {user:user,shs}
+    public void VaccinatePatient(User doctor, User user, Vaccination v) {
+        // (Outer)
+        if (doctor.getRole() == "Doctor") { // {shs: shs}
 
-    //   // S_ = a_ /\ b_ /\ c_ | s_  < {shs:shs} | doctor_ = {shs:shs} , user_ = {user:user,shs} , v_ = {user: suer shs}
-    public void VaccinatePatient(User doctor, User user, Vaccination v)
-    {
+            // if_act_for(VaccinatePatient,shs)
+            // declassify(user.isVaccinated()){{user:user,shs}}
+            // (Inner)
+            if (!user.isVaccinated()) { // {(shs:shs)}
+                DatabaseVaccination.put(user, new ArrayList<>());         // Flow  outer implicit  {shs:shs} -> {(shs:shs), (User: user, shs)}
+                // Flow inner implicit: {(shs:shs)} -> {(shs:shs), (User: user, shs)}
+                // Explicit: {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)}
 
-        if(doctor.getRole() == "Doctor") { // {shs: shs}
-            if (!user.isVaccinated()) { // {user: user, shs} s1_ = a_ /\ b_ /\ c_
-                DatabaseVaccination.put(user, new ArrayList<>());  // a_  = {shs:shs}        // Flow implicit  {shs:shs} -> {shs:shs}
-                                                                                             // Flow Explicit, implicit: {user: user, shs} -> {shs:shs}
-// either declass or give ownership to user
-                DatabaseVaccination.get(user).add(v);              //  b_ = {shs:shs}       // Flow implicit: {shs:shs} -> {shs:shs}
-                                                                                            // Flow Explicit, implicit: {user: user, shs} -> {shs:shs}/ not all
+                DatabaseVaccination.get(user).add(v);                    // Flow outer implicit: {shs:shs} -> {(shs:shs), (User: user, shs)}
+                // Flow inner implicit: {(shs:shs)} -> {(shs:shs), (User: user, shs)}
+                // Explicit: {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)}
 
-                user.setVaccinated(true); //                // Flow outer implicit: {shs:shs} -> {(shs:shs), (User: user, shs)}
-                                                            // Flow inner Explicit, implicit: {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)}
+                user.setVaccinated(true); //                             // Flow outer implicit: {shs:shs} -> {(shs:shs), (User: user, shs)}
+                // Flow inner implicit: {(shs:shs)} -> {(shs:shs), (User: user, shs)}
+                // Explicit: {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)}
 
-                this.VaccinatedPatients += 1;            // Flow outer implicit: {shs:shs} -> {shs:shs}
-                                                        // Flow  inner implicit: {(shs:shs), (User: user, shs)} -> {shs:shs}, Explicit: {shs: shs} -> {shs: shs}
+                this.VaccinatedPatients += 1;                            // Flow outer implicit:  {shs:shs} -> {shs:shs}
+                // Flow  inner implicit: {(shs:shs)} -> {shs:shs},
+                // Explicit: {shs: shs} -> {shs: shs}
             } else {
-                DatabaseVaccination.get(user).get(0).setNumberOfShots();    //  Explicit: {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)},
-                                                                            // implicit: {shs: shs}-> {{(shs:shs), (User: user, shs)}
+                DatabaseVaccination.get(user).get(0).setNumberOfShots();    // Flow inner implicit: {shs: shs} -> {{(shs:shs), (User: user, shs)}
+                // Flow outer implicit: {shs:shs} -> {{(shs:shs), (User: user, shs)}
+                // Explicit: {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)}
             }
-        }
-        else
-            System.out.println(doctor.getUsername() + " does not have permission to vaccinate " + user.getUsername()); //{shs:shs} -> {(shs:shs), (User: user, shs)}
+        } else
+            System.out.println(doctor.getUsername() + " does not have permission to vaccinate " + user.getUsername());
+        // Flow outer implicit {shs:shs} -> {(shs:shs), (User: user, shs)}
     }
-                            // {shs: shs} {user: user, shs} {user: user, shs}
+
+
+                            // {shs: shs}, {(shs: shs) ,(user: user, shs)}
     public void TestPatient(User doctor,User user, Testing t)
     {
+        // (Outer)
         if(doctor.getRole() == "Doctor") { // {shs: shs}
             if (!user.isTestedBefore() ) {  // {user: user, shs}
                 DatabaseTesting.put(user, new ArrayList<Testing>());    // implicit  {shs:shs} -> {shs:shs}
                                                                         // Explicit, implicit: {user: user, shs} -> {shs:shs}
 
-                user.setTestedBefore(true);                             // outer implicit: {shs:shs} -> {(shs:shs), (User: user, shs)}
-                                                                        // inner Explicit, implicit: {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)}
+                user.setTestedBefore(true);                             // Flow outer implicit: {shs:shs} -> {(shs:shs), (User: user, shs)}
+                                                                        // Flow inner implicit: {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)}
+                                                                        // Explicit: {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)}
             }
-            DatabaseTesting.get(user).add(t);                            // implicit: {shs:shs} -> {(shs:shs), (User: user, shs)}
+            DatabaseTesting.get(user).add(t);                           // Flow outer implicit: {shs:shs} -> {(shs:shs), (User: user, shs)}
                                                                         // Explicit {(shs:shs), (User: user, shs)} -> {(shs:shs), (User: user, shs)}
 
-            this.TotalTestedPatient += 1;          // Explicit: {shs: shs} -> {shs: shs}, Implicit: {shs: shs}-> {shs: shs},
+            this.TotalTestedPatient += 1;           // Flow outer implicit: {shs: shs}-> {shs: shs}
+                                                    // Explicit: {shs: shs} -> {shs: shs}
         }
         else
-            System.out.println(doctor.getUsername() + " does not have permission to test " + user.getUsername()); // {shs:shs} -> {(shs:shs), (User: user, shs)}
+            System.out.println(doctor.getUsername() + " does not have permission to test " + user.getUsername()); // Flow outer implicit {shs:shs} -> {(shs:shs), (User: user, shs)}
     }
 
 
                                            // {shs: shs} {user: user, shs} {user: user, shs}
     public void setUserTestResultPositive(User doctor, User user, int id)
     {
-        int counter = 0; //[shs:shs]
+        int counter = 0; // {(shs:shs)}
+        // (Outer)
         if(doctor.getRole() == "Doctor") {      // {shs: shs}
-            for (int i = 0; i < DatabaseTesting.get(user).size(); i++) {// i_ | [shs:shs]
+            // for loop
+            for (int i = 0; i < DatabaseTesting.get(user).size(); i++) { // {}
 
-                // if_act_for(DatabaseTesting.get,shs)
-                // DatabaseTesting.get // declassify(DatabaseTesting.get){shs:shs} | valid_declass(shs,DatabaseTesting.get_,{shs:shs} )
-                //  databaseTesting.get_ | {(shs:shs), (User: user, shs)}} -> {shs:shs}
+                // if_act_for(setUserTestResultPositive,shs)
+                // DatabaseTesting // declassify(DatabaseTesting){user:user,shs}
                 // end_act_for
 
+                // (Inner)
                 if (DatabaseTesting.get(user).get(i).getId() == id) {
-                    DatabaseTesting.get(user).get(i).setResult(true);   // outer implicit:{shs: shs} -> {shs:shs}
-                                                                        // inner  Explicit, implicit: {shs:shs} -> {shs:shs}
+                    DatabaseTesting.get(user).get(i).setResult(true);   // for_loop implicit {} ->  {shs:shs}
+                                                                        // outer implicit:  {shs: shs} -> {shs:shs}
+                                                                        // inner implicit: {shs:shs} -> {shs:shs}
+                                                                        // Explicit: {shs:shs} -> {shs:shs}
 
-                    counter += 1;                                       // outer implicit  {shs:shs} -> {shs:shs}
-                                                                        // inner implicit  {shs:shs} -> {shs:shs} | explicit:  {shs:shs} -> {shs:shs}
+                    counter += 1;                           // for_loop implicit {} ->  {shs: shs}
+                                                            // outer implicit  {shs:shs} -> {shs:shs}
+                                                            // inner implicit  {shs:shs} -> {shs:shs} | explicit:  {shs:shs} -> {shs:shs}
                 }
             }
             this.PossitiveTested = counter;  // {shs: shs} -> {shs: shs}
         }
         else
-            System.out.println(doctor.getUsername() + " does not have permission to set test results to " + user.getUsername()); //{shs:shs} -> {(shs:shs), (User: user, shs)}
+            System.out.println(doctor.getUsername() + " does not have permission to set test results to " + user.getUsername());
+            // outer implicit {shs:shs} -> {(shs:shs), (User: user, shs)}
+
     }
 
 
-                    //  {user: user, shs} {user: user, shs}
+                    // {(shs: shs) ,(user: user, shs)}, {(shs: shs) ,(user: user, shs)}
     public void getUserTestInfo(User checker, User patient)    {
-        if(checker.getCPR() == patient.getCPR()) { //  {user: user, shs}
+        // (Outer)
+        if(checker.getCPR() == patient.getCPR()) { //  {shs: shs} {user: user, shs}
+            // (Inner)
             if (!patient.isTestedBefore())
-                System.out.println(patient.getUsername() + " is not Tested before");  //2x implicit: {user: user, shs} -> {shs: shs}
+                System.out.println(patient.getUsername() + " is not Tested before");    // Flow outer implicit: {shs: shs} {user: user, shs} -> {shs: shs} {user: user, shs}
+                                                                                        // Flow inner implicit: {shs: shs} {user: user, shs} -> {shs: shs} {user: user, shs}
             else
-                System.out.println(patient.getUsername() + " is " + DatabaseTesting.get(patient).toString()); //2x implicit: {shs: shs} -> {shs: shs},
+                System.out.println(patient.getUsername() + " is " + DatabaseTesting.get(patient).toString());
+                // Flow outer implicit: {shs: shs} {user: user, shs} -> {shs: shs} {user: user, shs}
+                // Flow inner implicit: {shs: shs} {user: user, shs} -> {shs: shs} {user: user, shs}
         }
         else
-            System.out.println("You dont have permission do check that patient!");          //implicit: {shs:shs} -> {shs:shs}
+            System.out.println("You dont have permission do check that patient!");  //implicit: {shs:shs} -> {shs: shs} {user: user, shs}
     }
 
-                                     // {shs: shs}   {user: user,  shs}
+                         //{shs: shs}, {(shs: shs) ,(user: user, shs)}
     public void getUserTestInfoDoctor(User checker, User patient)    {
+        // (Outer)
         if(checker.getRole() == "Doctor") {     // {shs: shs}
+            // (Inner)
             if (!patient.isTestedBefore())
-                System.out.println(patient.getUsername() + " is not Tested before");    // implicit: {shs: shs} -> {shs: shs}
-                                                                                        // implicit: {user: user, shs} -> {shs: shs}
+                System.out.println(patient.getUsername() + " is not Tested before");    // Flow outer implicit: {shs:shs} -> {(shs: shs) ,(user: user, shs)}
+                                                                                        // Flow inner implicit: {(shs: shs) ,(user: user, shs)} -> {(shs: shs) ,(user: user, shs)}
             else
-                System.out.println(patient.getUsername() + " is " + DatabaseTesting.get(patient).toString()); // implicit: {shs: shs} -> {shs: shs},
-        }                                                                                                     // implicit: {user: user, shs} -> {shs: shs}
+                System.out.println(patient.getUsername() + " is " + DatabaseTesting.get(patient).toString());
+            // Flow outer implicit: {shs:shs} -> {shs: shs} {user: user, shs}
+            // Flow inner implicit: {shs: shs} {user: user, shs} -> {shs: shs} {user: user, shs}
+        }
         else
-            System.out.println("You dont have permission do check that patient!");      //implicit: {shs:shs} -> {shs:shs}
+            System.out.println("You dont have permission do check that patient!");      //implicit: {shs:shs} -> {shs: shs}
     }
 
 
-                    // [{user: user, shs} , {shs:shs}] , {user: user, shs}
+                    // {(shs: shs) ,(user: user, shs)} , {{(shs: shs) ,(user: user, shs)}  \\\ left side is when checker is a patient | right side is when checker is doctor
     public void getUserVaccineInfo(User checker, User user)    {
-        if(checker.getCPR() == user.getCPR() || checker.getRole() == "Doctor") { //  {user: user, shs}  | {shs:shs}
-            if (user.isVaccinated() != true)
+        // (Outer)
+        if(checker.getCPR() == user.getCPR() || checker.getRole() == "Doctor") { //  {(shs: shs) ,(user: user, shs)}  | {shs:shs}
+            // (Inner)
+            if (user.isVaccinated() != true) // {(shs: shs) ,(user: user, shs)}
                 System.out.println(user.getUsername() + " is not Vaccinated");
-            // 2x  implicit: {user: user, shs} -> {shs: shs} | implicit: {shs: shs} -> {shs: shs}
-            // explicit: {User:user, shs} -> {user:user}     | explicit: {User:user, shs} -> {shs: shs}, implicit: {user: user, shs} -> {shs: shs}
+            // Flow outer implicit: {(shs: shs) ,(user: user, shs)} -> {(shs: shs) ,(user: user, shs)} | {shs:shs} -> {(shs: shs) ,(user: user, shs)}
+            // Flow inner implicit: {(shs: shs) ,(user: user, shs)} -> {(shs: shs) ,(user: user, shs)} | {(shs: shs) ,(user: user, shs)} -> {(shs: shs) ,(user: user, shs)}
             else
                 System.out.println(user.getUsername() + " is " + DatabaseVaccination.get(user).toString());
-            // 2x  implicit: {user: user, shs} -> {shs: shs} |  implicit: {shs: shs} -> {shs: shs},
-            //     explicit: {User:user, shs} -> {user:user} |  explicit: {User:user, shs} -> {shs: shs},  implicit: {user: user, shs} -> {shs: shs}
+            // Flow outer implicit: {shs: shs} {user: user, shs} -> {shs: shs} {user: user, shs} | {shs:shs} -> {shs: shs} {user: user, shs}
+            // Flow inner implicit: {shs: shs} {user: user, shs} -> {shs: shs} {user: user, shs} | {shs: shs} {user: user, shs} -> {shs: shs} {user: user, shs}
         }else
             System.out.println("You dont have permission do check that patient!");  // //implicit: {shs:shs} -> {shs:shs}
     }
@@ -140,26 +170,32 @@ public class Hospital {
     }
 
     public void getVaccinatedPatients() {
-        System.out.println( this.VaccinatedPatients);//{⊥}
+        // if_act_for(this.VaccinatedPatients,shs)
+        System.out.println( this.VaccinatedPatients); // declassify(this.VaccinatedPatients){} | valid_declass(shs,this.VaccinatedPatients_,{})
+        //  this.VaccinatedPatients | {shs:shs} -> {}
     }
 
     public void getNumberOfPositiveTested() {
-        System.out.println( this.PossitiveTested);//{⊥}
+        // if_act_for(this.PossitiveTested,shs)
+        System.out.println( this.PossitiveTested); // declassify(this.PossitiveTested){} | valid_declass(shs,this.PossitiveTested_,{})
+        //  this.PossitiveTested | {shs:shs} -> {}
     }
 
 
-                            // [ {user: user ,shs}, {shs:shs}]
-    public void getUserAppointments(User checker,User user)
+            // {(shs: shs) ,(user: user, shs)} , {(shs: shs) ,(user: user, shs)}  \\\ left side is when checker is a patient | right side is when checker is doctor
+     public void getUserAppointments(User checker,User user)
     {
-        if(checker.getCPR() == user.getCPR() || checker.getRole() == "Doctor") {    //  {user: user, shs}  | {shs:shs}
+        // (Outer)
+        if(checker.getCPR() == user.getCPR() || checker.getRole() == "Doctor") {  //  {(shs: shs) ,(user: user, shs)}  | {shs:shs}
+            // (Inner)
             if (!user.getAppointment().isEmpty())
                 System.out.println(user.getUsername() + " has appointment for " + user.getAppointment());
-            //2x implicit: {user: user, shs} -> {user:user, shs} | implicit: {shs: shs} -> {shs: shs}
-            //   explicit: {user: user, shs} -> {user:user, shs} | explicit: {User:user, shs} -> {shs: shs}, implicit: {user: user, shs} -> {shs: shs}
+                // Flow outer implicit: {(shs: shs) ,(user: user, shs)} -> {(shs: shs) ,(user: user, shs)} | {shs:shs} -> {(shs: shs) ,(user: user, shs)}
+                // Flow inner implicit: {(shs: shs) ,(user: user, shs)} -> {(shs: shs) ,(user: user, shs)} | {(shs: shs) ,(user: user, shs)} -> {(shs: shs) ,(user: user, shs)}
             else
                 System.out.println(user.getUsername() + " has no active appointments.");
-        //2x implicit: {user: user, shs} -> {user:user, shs} | implicit: {shs: shs} -> {shs: shs}
-        //   explicit: {user: user, shs} -> {user:user, shs} | explicit: {User:user, shs} -> {shs: shs}, implicit: {user: user, shs} -> {shs: shs}
+            // Flow outer implicit: {shs: shs} {user: user, shs} -> {shs: shs} {user: user, shs} | {shs:shs} -> {shs: shs} {user: user, shs}
+            // Flow inner implicit: {shs: shs} {user: user, shs} -> {shs: shs} {user: user, shs} | {shs: shs} {user: user, shs} -> {shs: shs} {user: user, shs}
         }
         else
             System.out.println("You dont have permission do check that patient!");  // //implicit: {shs:shs} -> {shs:shs}
@@ -167,7 +203,8 @@ public class Hospital {
 
     public void setUserAppointments(User user, String date)
     {
-        user.setAppointment(date);
+        user.setAppointment(date); // Explicit flow: {(shs: shs) ,(user: user, shs)} -> {(shs: shs) ,(user: user, shs)}
+
     }
 
     public void getStatistics()
